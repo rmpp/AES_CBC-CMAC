@@ -21,15 +21,15 @@ public class AesCbc {
 			byte[] encryptedIV = encryptIV.doFinal(iv);
 
 
-			//------------------CBC RAW
+			//------------------CBC
 			//////////////////////////////////////////////////////////////
-			aesKey= new SecretKeySpec(keys.getCbcRawKey(),"AES");
-			//Cbc_raw IV = encryptedIV
+			aesKey= new SecretKeySpec(keys.getCbcKey(),"AES");
+			//Cbc IV = encryptedIV
 			IvParameterSpec ivparam = new IvParameterSpec(encryptedIV);
-			Cipher cbcRaw = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			Cipher cbc = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
-			cbcRaw.init(Cipher.ENCRYPT_MODE,aesKey, ivparam);
-			byte[] encriptedPayload = cbcRaw.doFinal(data);
+			cbc.init(Cipher.ENCRYPT_MODE,aesKey, ivparam);
+			byte[] encriptedPayload = cbc.doFinal(data);
 
 			returnSPacket = encriptedPayload;
 
@@ -54,13 +54,13 @@ public class AesCbc {
 			encryptIV.init(Cipher.ENCRYPT_MODE, aesKey);
 			byte[] encryptedIV = encryptIV.doFinal(iv);
 
-			//					CBC_RAW
-			aesKey= new SecretKeySpec(keys.getCbcRawKey(),"AES");
+			//					CBC
+			aesKey= new SecretKeySpec(keys.getCbcKey(),"AES");
 			IvParameterSpec ivparam = new IvParameterSpec(encryptedIV);
-			Cipher dCbcRaw = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			Cipher dCbc = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
-			dCbcRaw.init(Cipher.DECRYPT_MODE,aesKey, ivparam);
-			byte[] decriptedPayload = dCbcRaw.doFinal(payload);
+			dCbc.init(Cipher.DECRYPT_MODE,aesKey, ivparam);
+			byte[] decriptedPayload = dCbc.doFinal(payload);
 
 			retPacket = decriptedPayload;
 

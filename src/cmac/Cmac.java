@@ -55,13 +55,13 @@ public class Cmac {
 
 				byte[] cbcdata =  Arrays.copyOf(data, (nBlocks-1)*16);
 
-				//CBC RAW
-				aesKey= new SecretKeySpec(keys.getCbcRawKey(),"AES");
+				//CBC
+				aesKey= new SecretKeySpec(keys.getCbcKey(),"AES");
 				IvParameterSpec ivparam = new IvParameterSpec(encryptedIV);
-				Cipher cbcRaw = Cipher.getInstance("AES/CBC/NoPadding");
-				cbcRaw.init(Cipher.ENCRYPT_MODE,aesKey,ivparam);
+				Cipher cbc = Cipher.getInstance("AES/CBC/NoPadding");
+				cbc.init(Cipher.ENCRYPT_MODE,aesKey,ivparam);
 
-				byte[] cbcCt = cbcRaw.doFinal(cbcdata);
+				byte[] cbcCt = cbc.doFinal(cbcdata);
 
 				//get cbc last state
 				lastState = Arrays.copyOfRange(cbcCt,(nBlocks-2)*16, (nBlocks-1)*16);
@@ -100,12 +100,12 @@ public class Cmac {
 
 			}
 
-			aesKey= new SecretKeySpec(keys.getCbcRawKey(),"AES");
+			aesKey= new SecretKeySpec(keys.getCbcKey(),"AES");
 			IvParameterSpec ivparam = new IvParameterSpec(lastState);
-			Cipher cbcRaw = Cipher.getInstance("AES/CBC/NoPadding");
-			cbcRaw.init(Cipher.ENCRYPT_MODE,aesKey, ivparam);
+			Cipher cbc = Cipher.getInstance("AES/CBC/NoPadding");
+			cbc.init(Cipher.ENCRYPT_MODE,aesKey, ivparam);
 
-			cMac.setMac(cbcRaw.doFinal(lastBData));
+			cMac.setMac(cbc.doFinal(lastBData));
 
 		} catch (Exception  e) {
 			e.printStackTrace();
